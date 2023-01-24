@@ -1,64 +1,32 @@
-import { FC, FormEventHandler, useEffect } from 'react';
+import { FC } from 'react';
 import { GetStaticProps } from 'next';
-import styled from 'styled-components';
 import Head from 'next/head';
-import {
-  useContractSWR,
-  useSTETHContractRPC,
-  useLidoSWR,
-} from '@lido-sdk/react';
-import {
-  Block,
-  Link,
-  DataTable,
-  DataTableRow,
-  Input,
-  Steth,
-  Button,
-} from '@lidofinance/lido-ui';
-import { trackEvent, MatomoEventType } from '@lidofinance/analytics-matomo';
+import { Block, Button } from '@lidofinance/lido-ui';
 
 import Wallet from 'components/wallet';
-import Section from 'components/section';
 import Layout from 'components/layout';
 import Faq from 'components/faq';
-import { standardFetcher } from 'utils';
 import { FAQItem, getFaqList } from 'utils/faqList';
+import WalletSelectButtonEVM from 'components/walletSelectButtonEVM';
+import WalletSelectButtonDotsama from 'components/walletSelectButtonDotsama';
+import { useWeb3 } from '@reef-knot/web3-react';
+import { useDotsama, useLoadAccountsDotsama } from 'hooks';
+import { isDotsamaAccount } from 'utils';
+import styled from 'styled-components';
 
 interface HomeProps {
   faqList: FAQItem[];
 }
 
-const InputWrapper = styled.div`
-  margin-bottom: ${({ theme }) => theme.spaceMap.md}px;
+const Delimiter = styled.div`
+  margin-bottom: 20px;
 `;
 
 const Home: FC<HomeProps> = ({ faqList }) => {
-  useEffect(() => {
-    const matomoSomeEvent: MatomoEventType = [
-      'Lido_Frontend_Template',
-      'Mount index component',
-      'mount_index_component',
-    ];
-
-    trackEvent(...matomoSomeEvent);
-  }, []);
-
-  const handleSubmit: FormEventHandler<HTMLFormElement> | undefined = (
-    event,
-  ) => {
-    event.preventDefault();
-    alert('Submitted');
-  };
-
-  const contractRpc = useSTETHContractRPC();
-  const tokenName = useContractSWR({
-    contract: contractRpc,
-    method: 'name',
-  });
-
-  const { data } = useLidoSWR<number>('/api/oneinch-rate', standardFetcher);
-  const oneInchRate = data ? (100 - (1 / data) * 100).toFixed(2) : 1;
+  const { active: evmActive } = useWeb3();
+  const { selectedAccount } = useDotsama();
+  const dotsamaActive = isDotsamaAccount(selectedAccount);
+  const { loadAccounts } = useLoadAccountsDotsama();
 
   return (
     <Layout
@@ -70,32 +38,16 @@ const Home: FC<HomeProps> = ({ faqList }) => {
       </Head>
       <Wallet />
       <Block>
-        <form action="" method="post" onSubmit={handleSubmit}>
-          <InputWrapper>
-            <Input
-              fullwidth
-              placeholder="0"
-              leftDecorator={<Steth />}
-              label="Token amount"
-            />
-          </InputWrapper>
-          <Button fullwidth type="submit">
-            Submit
+        {evmActive ? null : <WalletSelectButtonEVM fullwidth />}
+        <Delimiter />
+        {dotsamaActive ? null : <WalletSelectButtonDotsama fullwidth />}
+        <Delimiter />
+        {dotsamaActive ? null : (
+          <Button fullwidth onClick={loadAccounts}>
+            Connect Dotsama old-fashioned way (@polkadot/api)
           </Button>
-        </form>
+        )}
       </Block>
-      <Section title="Data table" headerDecorator={<Link href="#">Link</Link>}>
-        <Block>
-          <DataTable>
-            <DataTableRow title="Token name" loading={tokenName.initialLoading}>
-              {tokenName.data}
-            </DataTableRow>
-            <DataTableRow title="1inch rate" loading={tokenName.initialLoading}>
-              {oneInchRate}
-            </DataTableRow>
-          </DataTable>
-        </Block>
-      </Section>
       <Faq faqList={faqList} />
     </Layout>
   );

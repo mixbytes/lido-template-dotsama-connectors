@@ -7,3 +7,5 @@ export * from './rpc';
 export * from './storage';
 export * from './example';
 export * from './metrics';
+export * from './app';
+export * from './chains';

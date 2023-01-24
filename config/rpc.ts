@@ -9,9 +9,8 @@ export const getBackendRPCPath = (chainId: CHAINS): string => {
 };
 
 export const backendRPC = {
-  [CHAINS.Mainnet]: getBackendRPCPath(CHAINS.Mainnet),
-  [CHAINS.Goerli]: getBackendRPCPath(CHAINS.Goerli),
-  [CHAINS.Kovan]: getBackendRPCPath(CHAINS.Kovan),
-  [CHAINS.Rinkeby]: getBackendRPCPath(CHAINS.Rinkeby),
-  [CHAINS.Ropsten]: getBackendRPCPath(CHAINS.Ropsten),
+  [CHAINS.Mainnet]: getBackendRPCPath(CHAINS.Moonbase),
+  [CHAINS.Moonbase]: getBackendRPCPath(CHAINS.Moonbase),
+  [CHAINS.Moonbeam]: getBackendRPCPath(CHAINS.Moonbeam),
+  [CHAINS.Moonriver]: getBackendRPCPath(CHAINS.Moonriver),
 };

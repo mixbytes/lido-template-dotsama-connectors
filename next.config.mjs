@@ -7,11 +7,9 @@ const basePath = process.env.BASE_PATH || '';
 const infuraApiKey = process.env.INFURA_API_KEY;
 const alchemyApiKey = process.env.ALCHEMY_API_KEY;
 const apiProviderUrls = {
-  [CHAINS.Mainnet]: process.env[`API_PROVIDER_URL_${CHAINS.Mainnet}`],
-  [CHAINS.Ropsten]: process.env[`API_PROVIDER_URL_${CHAINS.Ropsten}`],
-  [CHAINS.Rinkeby]: process.env[`API_PROVIDER_URL_${CHAINS.Rinkeby}`],
-  [CHAINS.Goerli]: process.env[`API_PROVIDER_URL_${CHAINS.Goerli}`],
-  [CHAINS.Kovan]: process.env[`API_PROVIDER_URL_${CHAINS.Kovan}`],
+  [CHAINS.Moonbase]: process.env[`API_PROVIDER_URL_${CHAINS.Moonbase}`],
+  [CHAINS.Moonriver]: process.env[`API_PROVIDER_URL_${CHAINS.Moonriver}`],
+  [CHAINS.Moonbeam]: process.env[`API_PROVIDER_URL_${CHAINS.Moonbeam}`],
 };
 
 const cspTrustedHosts = process.env.CSP_TRUSTED_HOSTS;

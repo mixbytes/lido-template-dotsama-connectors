@@ -8,9 +8,10 @@ import {
   PropsWithChildren,
 } from 'react';
 import { useThemeToggle } from '@lidofinance/lido-ui';
-import { WalletsModalForEth } from '@reef-knot/connect-wallet-modal';
-import WalletModal from 'components/walletModal';
-import { walletsMetrics } from 'config/matomoWalletsEvents';
+import WalletModal from 'components/walletModalEVM';
+import WalletModalSelectEVM from 'components/walletModalSelectEVM';
+import WalletModalSelectDotsama from 'components/walletModalSelectDotsama';
+import WalletModalDotsama from 'components/walletModalDotsama';
 
 export type ModalContextValue = {
   openModal: (modal: MODAL) => void;
@@ -18,11 +19,23 @@ export type ModalContextValue = {
 };
 
 export enum MODAL {
-  connect,
-  wallet,
+  walletEMV,
+  walletDotsama,
+  selectEVMWallet,
+  selectDotsamaWallet,
 }
 
 export const ModalContext = createContext({} as ModalContextValue);
+
+type ModalType = {
+  onClose: () => void;
+  Component: any;
+  open: boolean;
+};
+
+const Modal: FC<ModalType> = ({ open, Component, ...common }) => {
+  return <Component open={open} {...common} />;
+};
 
 const ModalProvider: FC<PropsWithChildren> = ({ children }) => {
   const [active, setActive] = useState<MODAL | null>(null);
@@ -52,11 +65,16 @@ const ModalProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ModalContext.Provider value={value}>
       {children}
-      <WalletModal open={active === MODAL.wallet} {...common} />
-      <WalletsModalForEth
-        open={active === MODAL.connect}
-        metrics={walletsMetrics}
-        hiddenWallets={['Opera Wallet']}
+      <WalletModal open={active === MODAL.walletEMV} {...common} />
+      <WalletModalDotsama open={active === MODAL.walletDotsama} {...common} />
+      <Modal
+        Component={WalletModalSelectEVM}
+        open={active === MODAL.selectEVMWallet}
+        {...common}
+      />
+      <Modal
+        Component={WalletModalSelectDotsama}
+        open={active === MODAL.selectDotsamaWallet}
         {...common}
       />
     </ModalContext.Provider>

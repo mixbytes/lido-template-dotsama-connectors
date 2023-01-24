@@ -8,8 +8,8 @@ import {
   Copy,
 } from '@lidofinance/lido-ui';
 import { useEtherscanOpen, useSDK } from '@lido-sdk/react';
-import { useConnectorInfo, useDisconnect } from '@reef-knot/web3-react';
-import { useCopyToClipboard } from 'hooks';
+import { useDisconnect } from '@reef-knot/web3-react';
+import { useConnectorInfo, useCopyToClipboard } from 'hooks';
 import { FC, useCallback } from 'react';
 import {
   WalletModalContentStyle,
@@ -21,7 +21,7 @@ import {
   WalletModalActionsStyle,
 } from './walletModalStyles';
 
-const WalletModal: FC<ModalProps> = (props) => {
+const WalletModalEVM: FC<ModalProps> = (props) => {
   const { onClose } = props;
   const { account } = useSDK();
   const { providerName } = useConnectorInfo();
@@ -86,4 +86,4 @@ const WalletModal: FC<ModalProps> = (props) => {
   );
 };
 
-export default WalletModal;
+export default WalletModalEVM;

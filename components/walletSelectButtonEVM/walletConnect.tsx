@@ -3,15 +3,15 @@ import { Button, ButtonProps } from '@lidofinance/lido-ui';
 import { useModal } from 'hooks';
 import { MODAL } from 'providers';
 
-const WalletConnect: FC<ButtonProps> = (props) => {
+const WalletSelectButtonEVM: FC<ButtonProps> = (props) => {
   const { onClick, ...rest } = props;
-  const { openModal } = useModal(MODAL.connect);
+  const { openModal } = useModal(MODAL.selectEVMWallet);
 
   return (
     <Button onClick={openModal} {...rest}>
-      Connect wallet
+      Select EVM wallet
     </Button>
   );
 };
 
-export default WalletConnect;
+export default WalletSelectButtonEVM;

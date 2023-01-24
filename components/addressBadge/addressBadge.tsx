@@ -8,7 +8,7 @@ const AddressBadge: AddressBadgeComponent = (props) => {
 
   return (
     <AddressBadgeStyle
-      symbols={isMobile ? 3 : 6}
+      symbols={isMobile ? 6 : 12}
       address={address ?? ''}
       {...rest}
     />

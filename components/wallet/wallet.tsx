@@ -1,75 +1,58 @@
 import {
   WalletCard,
-  WalletCardBalance,
+  WalletCardAccountDotsama,
+  WalletCardAccountEVM,
   WalletCardRow,
-  WalletCardAccount,
 } from 'components/walletCard';
 import { Divider } from '@lidofinance/lido-ui';
-import {
-  useEthereumBalance,
-  useSDK,
-  useSTETHBalance,
-  useTokenAddress,
-  useWSTETHBalance,
-} from '@lido-sdk/react';
+import { useSDK } from '@lido-sdk/react';
 import { useWeb3 } from '@reef-knot/web3-react';
-import FormatToken from 'components/formatToken';
 import FallbackWallet from 'components/fallbackWallet';
-import TokenToWallet from 'components/tokenToWallet';
-import { WalletComponent } from './types';
-import { TOKENS } from '@lido-sdk/constants';
+import { WalletComponent, WalletDotsamaComponent } from './types';
+import { useDotsama } from 'hooks';
+import { isDotsamaAccount } from 'utils';
+import FallbackWalletDotsama from 'components/fallbackWalletDotsama';
 
-const Wallet: WalletComponent = (props) => {
+const WalletEVM: WalletComponent = (props) => {
   const { account } = useSDK();
-  const eth = useEthereumBalance();
-  const steth = useSTETHBalance();
-  const wsteth = useWSTETHBalance();
-
-  const stethAddress = useTokenAddress(TOKENS.STETH);
-  const wstethAddress = useTokenAddress(TOKENS.WSTETH);
 
   return (
     <WalletCard {...props}>
       <WalletCardRow>
-        <WalletCardBalance
-          title="Eth balance"
-          loading={eth.initialLoading}
-          value={<FormatToken amount={eth.data} symbol="ETH" />}
-        />
-        <WalletCardAccount account={account} />
+        <WalletCardAccountEVM account={account} />
       </WalletCardRow>
-      <Divider />
+    </WalletCard>
+  );
+};
+
+export const WalletDotsama: WalletDotsamaComponent = (props) => {
+  const { selectedAccount } = useDotsama();
+
+  return (
+    <WalletCard {...props}>
       <WalletCardRow>
-        <WalletCardBalance
-          small
-          title="Token balance"
-          loading={steth.initialLoading}
-          value={
-            <>
-              <FormatToken amount={steth.data} symbol="stETH" />
-              <TokenToWallet address={stethAddress} />
-            </>
-          }
-        />
-        <WalletCardBalance
-          small
-          title="Token balance"
-          loading={wsteth.initialLoading}
-          value={
-            <>
-              <FormatToken amount={wsteth.data} symbol="wstETH" />
-              <TokenToWallet address={wstethAddress} />
-            </>
-          }
-        />
+        <WalletCardAccountDotsama account={selectedAccount} />
       </WalletCardRow>
     </WalletCard>
   );
 };
 
 const WalletWrapper: WalletComponent = (props) => {
-  const { active } = useWeb3();
-  return active ? <Wallet {...props} /> : <FallbackWallet {...props} />;
+  const { active: evmActive } = useWeb3();
+  const { selectedAccount } = useDotsama();
+  const dotsamaActive = isDotsamaAccount(selectedAccount);
+
+  return (
+    <>
+      {evmActive ? <WalletEVM {...props} /> : <FallbackWallet {...props} />}
+      {evmActive && dotsamaActive && <Divider />}
+      {dotsamaActive ? (
+        <WalletDotsama {...props} />
+      ) : (
+        <FallbackWalletDotsama {...props} />
+      )}
+    </>
+  );
 };
 
 export default WalletWrapper;

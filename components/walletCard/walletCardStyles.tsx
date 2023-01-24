@@ -71,7 +71,7 @@ export const WalletCardAccountStyle = styled.div`
   flex-shrink: 1;
   overflow: hidden;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-left: auto;
 
   & > * {
